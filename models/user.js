@@ -1,5 +1,5 @@
 const { Schema, model } = require('mongoose');
-import { isEmail } from 'validator';
+const { isEmail } = require('validator');
 
 const userSchema = new Schema(
     {
@@ -14,7 +14,8 @@ const userSchema = new Schema(
             required: true,
             unique: true,
             validate: {
-                validator: isEmail, message: 'Enter valid email.'
+                validator: isEmail,
+                message: 'Enter valid email.',
             },
         },
         thoughts: [
@@ -28,7 +29,7 @@ const userSchema = new Schema(
                 type: Schema.Types.ObjectId,
                 ref: 'User'
             }
-        ]
+        ],
     },
     {
         toJSON: {
