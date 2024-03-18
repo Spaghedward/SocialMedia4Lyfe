@@ -59,30 +59,24 @@ module.exports = {
 
     async deleteThought(req, res) {
         try {
-            // Find the thought to be deleted
-            const thought = await Thought.findOneAndRemove({ _id: req.params.thoughtId });
+            const thought = await Thought.findOneAndDelete({ _id: req.params.thoughtId });
     
-            // Check if the thought was found and deleted
             if (!thought) {
                 return res.status(404).json({ message: 'No thought with this id!' });
             }
-    
-            // Find the user and remove the thought from their thoughts array
+
             const user = await User.findOneAndUpdate(
-                { username: req.params.username },
+                { username: req.body.username },
                 { $pull: { thoughts: req.params.thoughtId } },
                 { new: true }
             );
     
-            // Check if the user was found and updated
             if (!user) {
                 return res.status(404).json({ error: 'User not found.' });
             }
     
-            // Send a valid HTTP response
             res.json({ message: 'Thought deleted.', thought, user });
         } catch (err) {
-            // Handle errors and send an appropriate HTTP response
             console.error(err);
             res.status(500).json({ error: 'Internal Server Error' });
         }
@@ -93,7 +87,7 @@ module.exports = {
         try {
             const thought = await Thought.findOneAndUpdate(
                 { _id: req.params.thoughtId },
-                { $addToset: { reactions: req.params.reactionId } },
+                { $addToSet: { reactionbody: req.body.reaction } },
                 { new: true }
             );
 
@@ -112,7 +106,7 @@ module.exports = {
         try {
             const thought = await Thought.findOneAndUpdate(
                 { _id: req.params.thoughtId },
-                { $pull: { reactions: req.params.reactionId } },
+                { $pull: { reactions: req.body.reactionId } },
                 { new: true }
             );
 
